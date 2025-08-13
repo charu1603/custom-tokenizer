@@ -28,11 +28,4 @@ The web-based demo provides an interactive way to test the tokenizer.
 -   Each method is thoroughly commented to explain its purpose, parameters, and return values.
 -   Error handling is included to gracefully handle cases like an untrained tokenizer or unknown tokens.
 
-**Screenshot 1: Initial View**
-
-
-**Screenshot 2: After Training**
-
-
-**Screenshot 3: Encoding and Decoding**
 
