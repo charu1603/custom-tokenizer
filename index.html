@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Tokenizer Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="p-4 sm:p-8 md:p-12">
+    <div class="max-w-4xl mx-auto">
+      <header class="text-center my-2">
+        <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">
+          Custom Tokenizer 
+        </h1>
+        <div class="py-4">
+          <p>
+            Read about
+            <a
+              href="https://chaitraligenaiblog.hashnode.dev/tokenization"
+              class="text-blue-600 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              What is tokenization and how it is useful ↗</a
+            >
+          </p>
+        </div>
+      </header>
+
+      <div
+        class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200"
+      >
+        <div class="flex flex-col sm:flex-row mb-6 border-b border-gray-200">
+          <button
+            class="tab-button text-gray-600 hover:text-gray-900 font-semibold py-3 px-4 sm:px-6 transition-colors duration-200 focus:outline-none"
+            data-tab="train"
+          >
+            Train
+          </button>
+          <button
+            class="tab-button text-gray-600 hover:text-gray-900 font-semibold py-3 px-4 sm:px-6 transition-colors duration-200 focus:outline-none"
+            data-tab="encode"
+          >
+            Encode
+          </button>
+          <button
+            class="tab-button text-gray-600 hover:text-gray-900 font-semibold py-3 px-4 sm:px-6 transition-colors duration-200 focus:outline-none"
+            data-tab="decode"
+          >
+            Decode
+          </button>
+          <button
+            class="tab-button text-gray-600 hover:text-gray-900 font-semibold py-3 px-4 sm:px-6 transition-colors duration-200 focus:outline-none"
+            data-tab="vocab"
+          >
+            Vocabulary
+          </button>
+        </div>
+
+        <div id="tab-content">
+          <!-- Tab: Train Tokenizer -->
+          <div class="tab-pane active" id="train">
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+              <h3
+                class="text-xl font-bold text-gray-700 mb-4 flex items-center"
+              >
+                <span
+                  class="bg-indigo-500 text-white w-8 h-8 flex items-center justify-center rounded-full mr-3 text-sm font-semibold"
+                  >1</span
+                >
+                Train Tokenizer
+              </h3>
+              <p class="text-gray-600 text-sm mb-4">
+                Paste text here to build the tokenizer's vocabulary. It learns
+                from this text, creating unique ID's for each token.
+              </p>
+              <textarea
+                id="corpusTextarea"
+                class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow resize-y text-sm"
+                rows="6"
+                placeholder="Example: The quick brown fox jumps over the lazy dog."
+              ></textarea>
+              <button
+                id="trainButton"
+                onclick="trainTokenizer()"
+                class="bg-indigo-600 text-white w-full py-3 mt-4 rounded-lg font-semibold transition-colors duration-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center justify-center"
+              >
+                Train Tokenizer
+              </button>
+              <div
+                id="trainingStatus"
+                class="hidden mt-4 p-3 text-sm rounded-lg font-medium"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Tab: Encode Text -->
+          <div class="tab-pane hidden" id="encode">
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+              <h3
+                class="text-xl font-bold text-gray-700 mb-4 flex items-center"
+              >
+                <span
+                  class="bg-green-500 text-white w-8 h-8 flex items-center justify-center rounded-full mr-3 text-sm font-semibold"
+                  >2</span
+                >
+                Encode Text
+              </h3>
+              <p class="text-gray-600 text-sm mb-4">
+                Enter a sentence to see how the tokenizer converts it into a
+                sequence of token IDs.
+              </p>
+              <textarea
+                id="encodeTextarea"
+                class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-shadow resize-y text-sm"
+                rows="4"
+                placeholder="Enter text to encode..."
+              ></textarea>
+              <button
+                id="encodeButton"
+                onclick="encodeText()"
+                class="bg-green-600 text-white w-full py-3 mt-4 rounded-lg font-semibold transition-colors duration-200 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center"
+              >
+                Encode
+              </button>
+              <div
+                id="encodedOutput"
+                class="hidden mt-4 p-3 text-sm rounded-lg font-medium overflow-auto max-h-[150px]"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Tab: Decode Tokens -->
+          <div class="tab-pane hidden" id="decode">
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+              <h3
+                class="text-xl font-bold text-gray-700 mb-4 flex items-center"
+              >
+                <span
+                  class="bg-purple-500 text-white w-8 h-8 flex items-center justify-center rounded-full mr-3 text-sm font-semibold"
+                  >3</span
+                >
+                Decode Tokens
+              </h3>
+              <p class="text-gray-600 text-sm mb-4">
+                Input a comma-separated list of IDs to convert back to
+                human-readable text.
+              </p>
+              <textarea
+                id="decodeTextarea"
+                class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow resize-y text-sm"
+                rows="4"
+                placeholder="e.g., 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13"
+              ></textarea>
+              <button
+                id="decodeButton"
+                onclick="decodeTokens()"
+                class="bg-purple-600 text-white w-full py-3 mt-4 rounded-lg font-semibold transition-colors duration-200 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 flex items-center justify-center"
+              >
+                Decode
+              </button>
+              <div
+                id="decodedOutput"
+                class="hidden mt-4 p-3 text-sm rounded-lg font-medium"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Tab: Vocabulary -->
+          <div class="tab-pane hidden" id="vocab">
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+              <h3
+                class="text-xl font-bold text-gray-700 mb-4 flex items-center"
+              >
+                <span
+                  class="bg-blue-500 text-white w-8 h-8 flex items-center justify-center rounded-full mr-3 text-sm font-semibold"
+                  >4</span
+                >
+                Vocabulary
+              </h3>
+              <p class="text-gray-600 text-sm mb-4">
+                The vocabulary learned from the corpus, with token-to-ID
+                mappings. Train the tokenizer to see the vocabulary here.
+              </p>
+              <div
+                id="vocabOutput"
+                class="p-4 border border-gray-300 rounded-lg bg-white overflow-y-auto max-h-[500px] text-sm"
+              >
+                <p class="text-gray-500">
+                  Train the tokenizer to see the vocabulary here.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   
+  </body>
+</html>
